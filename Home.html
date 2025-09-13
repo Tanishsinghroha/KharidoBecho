@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KhareedoBecho — Colorful Wholesale Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1226; --card:#171a35; --text:#eef2ff; --muted:#b8c1ff;
+    --sky:#43b6ff; --violet:#8b5cf6; --pink:#ff5bbb; --mint:#34d399; --amber:#f59e0b; --danger:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:
+    radial-gradient(1000px 700px at -10% -10%, #60a5fa33, transparent 60%),
+    radial-gradient(900px 700px at 110% 0%, #f472b633, transparent 60%),
+    radial-gradient(900px 700px at 50% 120%, #34d39933, transparent 60%), var(--bg);
+    color:var(--text); font-family:Poppins,system-ui,Segoe UI,Arial}
+  .container{max-width:1140px;margin:0 auto;padding:20px}
+  header{position:sticky;top:0;z-index:10;background:#0f1226d0;border-bottom:1px solid #ffffff18;backdrop-filter:blur(8px)}
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 20px}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+  .title{font-weight:800;letter-spacing:.3px;font-size:22px;
+    background:linear-gradient(90deg,var(--sky),var(--pink),var(--violet));-webkit-background-clip:text;background-clip:text;color:white}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:none;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;color:var(--text);
+    background:linear-gradient(135deg,#ffffff12,#ffffff06);border:1px solid #ffffff1a;box-shadow:0 6px 18px #0006;transition:.15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px #0008}
+  .btn.primary{background:linear-gradient(135deg,var(--card),var(--danger));}
+  .btn.success{background:linear-gradient(135deg,var(--mint),#9ae6b4);color:#05251a}
+  .btn.warning{background:linear-gradient(135deg,var(--amber),var(--pink))}
+  .btn.danger{background:linear-gradient(135deg,var(--danger),#f59e0b)}
+  .pill{border-radius:999px;padding:8px 12px;font-size:13px}
+  .card{background:linear-gradient(180deg,#ffffff16,#ffffff0A);border:1px solid #ffffff1a;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 10px 40px #0007}
+  h1{margin:0 0 8px 0;font-size:34px} h2{margin:0 0 10px 0;font-size:24px} h3{margin:0 0 8px 0;font-size:18px}
+  p{margin:0} .meta{color:var(--muted);font-size:13px}
+  .grid{display:grid;gap:16px} .col2{grid-template-columns:1fr 1fr} .col3{grid-template-columns:repeat(3,1fr)}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .space{height:14px}
+  .divider{height:1px;background:#ffffff16;margin:12px 0}
+  .field{display:grid;gap:6px}
+  label{font-size:12px;color:#cdd3ff}
+  .input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #ffffff24;background:#0b0f25;color:var(--text);outline:none}
+  .list{display:grid;gap:12px}
+  .tag{background:#ffffff18;border:1px solid #ffffff22;border-radius:999px;padding:4px 8px;font-size:12px}
+  .empty{text-align:center;padding:16px;border:1px dashed #ffffff22;border-radius:12px;color:#aab3ff}
+  .product{display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;padding:12px;border-radius:14px;border:1px solid #ffffff1a;background:#121633}
+  .product img{width:90px;height:90px;object-fit:cover;border-radius:12px;border:1px solid #ffffff22}
+  .price{font-weight:800;color:#e1f4ff}
+  .rating{color:#ffd966}
+  footer{opacity:.9;padding:20px 0;text-align:center;color:#aeb6ff}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav container">
+    <a class="brand" href="#home" onclick="Router.go('home')">
+      <div class="logo" aria-hidden="true"></div>
+      <img alt="Marketplace image" style="width:10%;border-radius:14px;border:1px solid #ffffff22"
+             src="https://ik.imagekit.io/KharidoBecho/WhatsApp%20Image%202025-09-13%20at%2012.24.59_32f4ee91.jpg?updatedAt=1757746749337"/>
+      <div class="title">KhareedoBecho</div>
+    </a>
+    <div class="actions">
+      <button class="btn pill" onclick="Router.go('home')">Home</button>
+      <button class="btn pill" onclick="Router.go('buyer')">Buyer</button>
+      <button class="btn pill" onclick="Router.go('wholesaler')">Wholesaler</button>
+      <button id="logoutBtn" class="btn pill danger hidden" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- HOME -->
+  <section id="screen-home">
+    <div class="grid col2">
+      <div class="card">
+        <h1>Welcome</h1>
+        <p class="meta">Register and get a unique ID. Wholesalers list products; buyers browse and send purchase requests.</p>
+        <div class="space"></div>
+        <div class="grid col2">
+          <button class="btn primary" onclick="toggleReg('wh')">Register Wholesaler</button>
+          <button class="btn success" onclick="toggleReg('by')">Register Shopkeeper</button>
+        </div>
+        <div id="reg-wh" class="hidden" style="margin-top:14px">
+          <div class="field"><label>Name</label><input id="w-name" class="input" placeholder="e.g., Aarav Traders"></div>
+          <div class="field"><label>Address</label><input id="w-address" class="input" placeholder="Address, City, PIN"></div>
+          <div class="field"><label>Contact</label><input id="w-contact" class="input" placeholder="Phone or Email"></div>
+          <button class="btn primary" onclick="register('wholesaler')">Create wholesaler account</button>
+        </div>
+        <div id="reg-by" class="hidden" style="margin-top:14px">
+          <div class="field"><label>Name</label><input id="b-name" class="input" placeholder="e.g., Pawan Gupta"></div>
+          <div class="field"><label>Address</label><input id="b-address" class="input" placeholder="Address, City, PIN"></div>
+          <div class="field"><label>Contact</label><input id="b-contact" class="input" placeholder="Phone or Email"></div>
+          <button class="btn success" onclick="register('buyer')">Create Shopkeeper account</button>
+        </div>
+        <div id="reg-msg" class="meta" style="margin-top:8px"></div>
+        <div class="divider"></div>
+        <h3>Login</h3>
+        <div class="grid col2">
+          <select id="login-role" class="input">
+            <option value="wholesaler">Wholesaler</option>
+            <option value="buyer">Shopkeeper</option>
+          </select>
+          <input id="login-id" class="input" placeholder="Your ID (WLS-... / BYR-...)">
+        </div>
+        <button class="btn warning" onclick="login()">Login</button>
+        <div id="login-msg" class="meta" style="margin-top:8px"></div>
+      </div>
+      <div class="card">
+        <img alt="Marketplace image" style="width:100%;border-radius:14px;border:1px solid #ffffff22"
+             src="https://ik.imagekit.io/KharidoBecho/WhatsApp%20Image%202025-09-13%20at%2012.24.59_32f4ee91.jpg?updatedAt=1757746749337"/>
+        <div class="space"></div>
+        <p class="meta">Clean, colorful, and practical website — perfect for testing your marketplace flow locally.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHOLESALER -->
+  <section id="screen-wholesaler" class="hidden">
+    <div class="card">
+      <h2>Wholesaler dashboard</h2>
+      <div id="w-info" class="meta"></div>
+    </div>
+    <div class="grid col3">
+      <div class="card">
+        <h3>Add product</h3>
+        <div class="field"><label>Product name</label><input id="p-name" class="input" placeholder="e.g., Premium Cotton Tee"></div>
+        <div class="field"><label>Price</label><input id="p-price" class="input" type="number" min="0" placeholder="e.g., 199"></div>
+        <div class="field"><label>Image URL</label><input id="p-img" class="input" placeholder="https://..."></div>
+        <button class="btn primary" onclick="addProduct()">Add product</button>
+      </div>
+      <div class="card" style="grid-column: span 2;">
+        <h3>Your products</h3>
+        <div id="w-products" class="list"></div>
+        <div id="w-products-empty" class="empty">No products yet.</div>
+      </div>
+    </div>
+    <div class="grid col2">
+      <div class="card">
+        <h3>Incoming requests</h3>
+        <div id="w-requests" class="list"></div>
+        <div id="w-requests-empty" class="empty">No requests yet.</div>
+        <div id="w-rating-summary" class="meta" style="margin-top:6px"></div>
+      </div>
+      <div class="card">
+        <h3>Your ratings</h3>
+        <div id="w-ratings" class="list"></div>
+        <div id="w-ratings-empty" class="empty">No reviews yet.</div>
+        <div id="w-rating-summary" class="meta" style="margin-top:6px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUYER -->
+  <section id="screen-buyer" class="hidden">
+    <div class="card">
+      <h2>Shopkeeper portal</h2>
+      <div id="b-info" class="meta"></div>
+    </div>
+    <div class="grid col3">
+      <div class="card">
+        <h3>Filters</h3>
+        <div class="field"><label>Search</label><input id="search" class="input" placeholder="Type product name" oninput="renderBuyerProducts()"></div>
+        <div class="field"><label>Sort by</label>
+          <select id="sort" class="input" onchange="renderBuyerProducts()">
+            <option value="recent">Most recent</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="card" style="grid-column: span 2;">
+        <h3>All products</h3>
+        <div id="b-products" class="list"></div>
+        <div id="b-products-empty" class="empty">No products yet.</div>
+      </div>
+    </div>
+    <div class="grid col2">
+      <div class="card">
+        <h3>My requests</h3>
+        <div id="b-requests" class="list"></div>
+        <div id="b-requests-empty" class="empty">You have no requests.</div>
+      </div>
+      <div class="card">
+        <h3>Leave a review</h3>
+        <div class="field"><label>Wholesaler</label><select id="rev-wh" class="input"></select></div>
+        <div class="field"><label>Rating out of 5</label><input id="rev-stars" class="input" type="number" min="1" max="5" value="5"></div>
+        <div class="field"><label>Comment</label><input id="rev-comment" class="input" placeholder="e.g., Great quality and fast response."></div>
+        <button class="btn success" onclick="leaveReview()">Submit review</button>
+        <div id="rev-msg" class="meta" style="margin-top:6px"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="container">© KhareedoBecho — colorful local website demo</footer>
+
+<script>
+/* ========== Data & utils ========== */
+const KEYS = { users:'kb_users', products:'kb_products', requests:'kb_requests', reviews:'kb_reviews', session:'kb_session' };
+const $ = s => document.querySelector(s);
+const el = (t,a={},kids=[]) => { const n=document.createElement(t); for(const k in a){ if(k==='class') n.className=a[k]; else if(k==='html') n.innerHTML=a[k]; else n.setAttribute(k,a[k]); } kids.forEach(c=>n.appendChild(c)); return n; };
+const read = k => JSON.parse(localStorage.getItem(k) || '[]');
+const write = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+const getSession = () => JSON.parse(localStorage.getItem(KEYS.session) || 'null');
+const setSession = v => localStorage.setItem(KEYS.session, JSON.stringify(v));
+const uid = pre => `${pre}-${Date.now().toString(36).toUpperCase().slice(-4)}${Math.random().toString(36).toUpperCase().slice(2,6)}`;
+
+/* ========== Router ========== */
+const Router = {
+  go(screen){
+    ['home','wholesaler','buyer'].forEach(s=>{ const sec=$('#screen-'+s); if(sec) sec.classList.toggle('hidden', s!==screen); });
+    $('#logoutBtn').classList.toggle('hidden', !getSession());
+    location.hash = screen;
+    if(screen==='wholesaler') renderWholesaler();
+    if(screen==='buyer') renderBuyer();
+  }
+};
+window.addEventListener('hashchange', ()=>Router.go((location.hash||'#home').slice(1)));
+document.addEventListener('DOMContentLoaded', ()=>{
+  seedIfEmpty();
+  Router.go((location.hash||'#home').slice(1));
+});
+
+/* ========== Auth ========== */
+function toggleReg(which){
+  $('#reg-wh').classList.add('hidden'); $('#reg-by').classList.add('hidden');
+  if(which==='wh') $('#reg-wh').classList.remove('hidden');
+  if(which==='by') $('#reg-by').classList.remove('hidden');
+}
+function register(role){
+  const name = role==='wholesaler' ? $('#w-name').value.trim() : $('#b-name').value.trim();
+  const address = role==='wholesaler' ? $('#w-address').value.trim() : $('#b-address').value.trim();
+  const contact = role==='wholesaler' ? $('#w-contact').value.trim() : $('#b-contact').value.trim();
+  if(!name||!address||!contact){ alert('Please fill all fields.'); return; }
+  const id = uid(role==='wholesaler' ? 'WLS' : 'BYR');
+  const users = read(KEYS.users); users.push({id, role, name, address, contact, createdAt: Date.now()}); write(KEYS.users, users);
+  $('#reg-msg').textContent = `Registered! Your ${role} ID is ${id}. Use it to login.`;
+  if(role==='wholesaler'){ $('#w-name').value=''; $('#w-address').value=''; $('#w-contact').value=''; } else { $('#b-name').value=''; $('#b-address').value=''; $('#b-contact').value=''; }
+}
+function login(){
+  const role = $('#login-role').value;
+  const id = $('#login-id').value.trim();
+  const user = read(KEYS.users).find(u=>u.id===id && u.role===role);
+  if(!user){ $('#login-msg').textContent='Invalid ID or role.'; return; }
+  setSession({id:user.id, role:user.role}); $('#login-id').value='';
+  Router.go(role);
+}
+function logout(){ localStorage.removeItem(KEYS.session); Router.go('home'); }
+
+/* ========== Wholesaler ========== */
+function renderWholesaler(){
+  const ses = getSession(); if(!ses || ses.role!=='wholesaler'){ Router.go('home'); return; }
+  const me = read(KEYS.users).find(u=>u.id===ses.id);
+  $('#w-info').textContent = `${me.name} (${me.id}) • ${me.address} • ${me.contact}`;
+  renderWhProducts(me.id);
+  renderWhRequests(me.id);
+  renderWhRatings(me.id);
+  // auto-refresh requests while on dashboard
+  clearInterval(window._reqPoll);
+  window._reqPoll = setInterval(()=>{ const s=getSession(); const visible = !$('#screen-wholesaler').classList.contains('hidden'); if(s&&s.role==='wholesaler'&&visible) renderWhRequests(s.id); }, 3000);
+}
+function addProduct(){
+  const ses = getSession(); if(!ses || ses.role!=='wholesaler') return;
+  const name = $('#p-name').value.trim();
+  const price = parseFloat($('#p-price').value);
+  const img = ($('#p-img').value.trim() || 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=800&auto=format&fit=crop');
+  if(!name || isNaN(price)){ alert('Enter product name and valid price.'); return; }
+  const products = read(KEYS.products);
+  products.push({id:uid('PRD'), wholesalerId:ses.id, name, price, img, createdAt: Date.now()});
+  write(KEYS.products, products);
+  $('#p-name').value=''; $('#p-price').value=''; $('#p-img').value='';
+  renderWhProducts(ses.id);
+  renderBuyerProducts(); // keep buyer view fresh
+}
+function renderWhProducts(wid){
+  const list = $('#w-products'); list.innerHTML='';
+  const items = read(KEYS.products).filter(p=>p.wholesalerId===wid).sort((a,b)=>b.createdAt-a.createdAt);
+  $('#w-products-empty').classList.toggle('hidden', items.length>0);
+  items.forEach(p=>{
+    const card = el('div',{class:'product'},[
+      el('img',{src:p.img, alt:p.name}),
+      el('div',{},[
+        el('div',{class:'row'},[
+          el('strong',{html:p.name}),
+          el('span',{class:'tag',html:p.id})
+        ]),
+        el('div',{class:'meta',html:`Price: <span class="price">₹${p.price.toFixed(2)}</span>`})
+      ]),
+      el('div',{},[
+        el('button',{class:'btn pill', onclick:()=>editProduct(p.id)}, [document.createTextNode('Edit')]),
+        el('div',{class:'space'}),
+        el('button',{class:'btn pill danger', onclick:()=>deleteProduct(p.id)}, [document.createTextNode('Remove')])
+      ])
+    ]);
+    list.appendChild(card);
+  });
+}
+function editProduct(pid){
+  const products = read(KEYS.products);
+  const i = products.findIndex(x=>x.id===pid); if(i<0) return;
+  const p = products[i];
+  const newName = prompt('Edit name:', p.name); if(newName===null) return;
+  const newPriceStr = prompt('Edit price:', p.price); if(newPriceStr===null) return;
+  const newImg = prompt('Edit image URL:', p.img); if(newImg===null) return;
+  const newPrice = parseFloat(newPriceStr); if(isNaN(newPrice)){ alert('Invalid price.'); return; }
+  products[i] = {...p, name: newName.trim()||p.name, price: newPrice, img: newImg.trim()||p.img};
+  write(KEYS.products, products);
+  renderWhProducts(p.wholesalerId);
+  renderBuyerProducts();
+}
+function deleteProduct(pid){
+  if(!confirm('Remove this product?')) return;
+  const products = read(KEYS.products);
+  const idx = products.findIndex(x=>x.id===pid); if(idx<0) return;
+  const wid = products[idx].wholesalerId;
+  products.splice(idx,1);
+  write(KEYS.products, products);
+  // Remove related requests to prevent stale entries
+  const reqs = read(KEYS.requests).filter(r=>r.productId!==pid);
+  write(KEYS.requests, reqs);
+  renderWhProducts(wid);
+  renderWhRequests(wid);
+  renderBuyerProducts();
+}
+function renderWhRequests(wid){
+  const list = $('#w-requests'); list.innerHTML='';
+  const reqs = read(KEYS.requests).filter(r=>r.wholesalerId===wid).sort((a,b)=>b.createdAt-a.createdAt);
+  const users = read(KEYS.users);
+  const products = read(KEYS.products);
+  $('#w-requests-empty').classList.toggle('hidden', reqs.length>0);
+  reqs.forEach(r=>{
+    const buyer = users.find(u=>u.id===r.buyerId);
+    const prod = products.find(p=>p.id===r.productId);
+    list.appendChild(el('div',{class:'card'},[
+      el('div',{class:'row'},[
+        el('strong',{html: prod? prod.name : 'Product removed'}),
+        el('span',{class:'tag',html:r.id}),
+        el('span',{class:'tag',html:r.status.toUpperCase()})
+      ]),
+      el('div',{class:'meta', html:`Buyer: ${buyer?.name||'Unknown'} (${r.buyerId}) • ${buyer?.address||''} • ${buyer?.contact||''}`}),
+      el('div',{class:'row'},[
+        el('button',{class:'btn pill success', onclick:()=>setReqStatus(r.id,'accepted')},[document.createTextNode('Accept')]),
+        el('button',{class:'btn pill danger', onclick:()=>setReqStatus(r.id,'declined')},[document.createTextNode('Decline')])
+      ])
+    ]));
+  });
+}
+function setReqStatus(reqId,status){
+  const reqs = read(KEYS.requests);
+  const i = reqs.findIndex(r=>r.id===reqId); if(i<0) return;
+  const wid = reqs[i].wholesalerId;
+  reqs[i].status = status;
+  write(KEYS.requests, reqs);
+  renderWhRequests(wid);
+}
+
+/* ========== Buyer ========== */
+function renderBuyer(){
+  const ses = getSession();
+  const users = read(KEYS.users);
+  const me = ses && ses.role==='buyer' ? users.find(u=>u.id===ses.id) : null;
+  $('#b-info').textContent = me ? `${me.name} (${me.id}) • ${me.address} • ${me.contact}` : 'Browsing as guest';
+  // populate wholesaler list for reviews
+  const sel = $('#rev-wh'); sel.innerHTML='';
+  users.filter(u=>u.role==='wholesaler').forEach(w=> sel.appendChild(el('option',{value:w.id, html:`${w.name} (${w.id})`})) );
+  renderBuyerProducts();
+  renderBuyerRequests();
+}
+function ratingSummaryFor(whId){
+  const list = read(KEYS.reviews).filter(r=>r.wholesalerId===whId);
+  const count = list.length; const avg = count ? list.reduce((a,b)=>a + Number(b.stars||0), 0)/count : 0;
+  return {avg, count};
+}
+function renderBuyerProducts(){
+  const q = ($('#search')?.value||'').toLowerCase();
+  const sort = $('#sort')?.value||'recent';
+  const users = read(KEYS.users);
+  const wholesalers = users.filter(u=>u.role==='wholesaler');
+  const items = read(KEYS.products)
+    .filter(p=>p.name.toLowerCase().includes(q))
+    .map(p=>{
+      const w = wholesalers.find(x=>x.id===p.wholesalerId);
+      const {avg,count} = ratingSummaryFor(p.wholesalerId);
+      return {...p, wholesaler:w, rAvg:avg, rCount:count};
+    });
+  if(sort==='recent') items.sort((a,b)=>b.createdAt-a.createdAt);
+  if(sort==='price-asc') items.sort((a,b)=>a.price-b.price);
+  if(sort==='price-desc') items.sort((a,b)=>b.price-a.price);
+  if(sort==='name') items.sort((a,b)=>a.name.localeCompare(b.name));
+  const list = $('#b-products'); list.innerHTML='';
+  $('#b-products-empty').classList.toggle('hidden', items.length>0);
+  items.forEach(p=>{
+    const stars = p.rCount ? '★'.repeat(Math.round(p.rAvg)) + '☆'.repeat(5-Math.round(p.rAvg)) : '☆☆☆☆☆';
+    list.appendChild(el('div',{class:'product'},[
+      el('img',{src:p.img, alt:p.name}),
+      el('div',{},[
+        el('div',{class:'row'},[
+          el('strong',{html:p.name}),
+          el('span',{class:'tag',html:p.wholesaler?.name || 'Unknown'}),
+          el('span',{class:'tag',html:p.wholesalerId})
+        ]),
+        el('div',{class:'meta', html:`₹<span class="price">${p.price.toFixed(2)}</span> • <span class="rating">${stars}</span> ${p.rCount? `(${p.rAvg.toFixed(1)} by ${p.rCount})` : '(no reviews yet)'}`}),
+        el('div',{class:'meta', html:`${p.wholesaler?.address||''} • ${p.wholesaler?.contact||''}`})
+      ]),
+      el('div',{},[
+        el('button',{class:'btn pill primary', onclick:()=>requestToBuy(p.id)},[document.createTextNode('Request to buy')])
+      ])
+    ]));
+  });
+}
+function requestToBuy(productId){
+  const ses = getSession();
+  if(!ses || ses.role!=='buyer'){ alert('Please login as buyer to send a request.'); return; }
+  const product = read(KEYS.products).find(p=>p.id===productId);
+  if(!product){ alert('Product not found.'); return; }
+  const reqs = read(KEYS.requests);
+  reqs.push({id:uid('REQ'), productId: product.id, wholesalerId: product.wholesalerId, buyerId: ses.id, status:'pending', createdAt: Date.now()});
+  write(KEYS.requests, reqs);
+  renderBuyerRequests();
+  alert('Request sent to wholesaler.');
+}
+function renderBuyerRequests(){
+  const ses = getSession();
+  const all = read(KEYS.requests);
+  const mine = ses && ses.role==='buyer' ? all.filter(r=>r.buyerId===ses.id).sort((a,b)=>b.createdAt-a.createdAt) : [];
+  const users = read(KEYS.users);
+  const products = read(KEYS.products);
+  const list = $('#b-requests'); list.innerHTML='';
+  $('#b-requests-empty').classList.toggle('hidden', mine.length>0);
+  mine.forEach(r=>{
+    const w = users.find(u=>u.id===r.wholesalerId);
+    const p = products.find(x=>x.id===r.productId);
+    list.appendChild(el('div',{class:'card'},[
+      el('div',{class:'row'},[
+        el('strong',{html: p? p.name : 'Product removed'}),
+        el('span',{class:'tag',html:r.id}),
+        el('span',{class:'tag',html:r.status.toUpperCase()})
+      ]),
+      el('div',{class:'meta', html:`Wholesaler: ${w?.name||'Unknown'} (${r.wholesalerId}) • ${w?.address||''} • ${w?.contact||''}`})
+    ]));
+  });
+}
+
+/* ========== Reviews ========== */
+function leaveReview(){
+  const ses = getSession();
+  if(!ses || ses.role!=='buyer'){ alert('Login as buyer to leave a review.'); return; }
+  const wholesalerId = $('#rev-wh').value;
+  let stars = parseInt($('#rev-stars').value,10); if(isNaN(stars)) stars = 5;
+  const comment = $('#rev-comment').value.trim();
+  stars = Math.max(1, Math.min(5, stars));
+  const reviews = read(KEYS.reviews);
+  reviews.push({id:uid('REV'), wholesalerId, buyerId: ses.id, stars, comment, createdAt: Date.now()});
+  write(KEYS.reviews, reviews);
+  $('#rev-comment').value=''; $('#rev-msg').textContent='Thank you! Review submitted.';
+  const s = getSession(); if(s && s.role==='wholesaler' && s.id===wholesalerId) renderWhRatings(wholesalerId);
+  renderBuyerProducts();
+}
+function ratingSummaryForWh(wid){
+  const list = read(KEYS.reviews).filter(r=>r.wholesalerId===wid);
+  const count = list.length; const avg = count? list.reduce((a,b)=>a+Number(b.stars||0),0)/count : 0;
+  return {avg, count, list:list.sort((a,b)=>b.createdAt-a.createdAt)};
+}
+function renderWhRatings(wid){
+  const {avg,count,list} = ratingSummaryForWh(wid);
+  const box = $('#w-ratings'); const summary = $('#w-rating-summary');
+  if(!box || !summary) return;
+  box.innerHTML = '';
+  $('#w-ratings-empty').classList.toggle('hidden', list.length>0);
+  summary.textContent = count ? `Average: ${avg.toFixed(1)} out of 5 from ${count} review(s)` : '';
+  list.forEach(r=>{
+    const stars = '★'.repeat(r.stars) + '☆'.repeat(5-r.stars);
+    box.appendChild(el('div',{class:'card'},[
+      el('div',{class:'row'},[
+        el('span',{class:'rating', html:stars}),
+        el('span',{class:'tag', html:r.id})
+      ]),
+      el('div',{class:'meta', html:`By: ${r.buyerId}`}),
+      el('div',{class:'meta', html:r.comment || '—'})
+    ]));
+  });
+}
+
+/* ========== Seed demo data (optional) ========== */
+function seedIfEmpty(){
+  if(read(KEYS.users).length>0) return;
+  const w1={id:'WLS-SKY01', role:'wholesaler', name:'SkyBlue Exports', address:'Pune, MH', contact:'+91 90000 00001', createdAt:Date.now()-500000};
+  const w2={id:'WLS-VIB02', role:'wholesaler', name:'Vibrant Mart',   address:'Mumbai, MH', contact:'+91 90000 00002', createdAt:Date.now()-450000};
+  const b1={id:'BYR-PAW01', role:'buyer',      name:'Pawan',          address:'Haveli, MH', contact:'+91 91234 56789', createdAt:Date.now()-400000};
+  write(KEYS.users,[w1,w2,b1]);
+  write(KEYS.products,[
+    {id:'PRD-T1', wholesalerId:w1.id, name:'Cotton T-Shirt', price:199, img:'https://images.unsplash.com/photo-1520975922284-0e3fb6cc2ad3?q=80&w=800&auto=format&fit=crop', createdAt:Date.now()-300000},
+    {id:'PRD-J1', wholesalerId:w1.id, name:'Denim Jeans',    price:899, img:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=800&auto=format&fit=crop', createdAt:Date.now()-280000},
+    {id:'PRD-S1', wholesalerId:w2.id, name:'Running Shoes',  price:1599,img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop', createdAt:Date.now()-260000},
+  ]);
+  write(KEYS.requests,[
+    {id:'REQ-001', productId:'PRD-T1', wholesalerId:w1.id, buyerId:b1.id, status:'pending', createdAt:Date.now()-200000}
+  ]);
+  write(KEYS.reviews,[
+    {id:'REV-001', wholesalerId:w1.id, buyerId:b1.id, stars:5, comment:'Great quality and quick reply.', createdAt:Date.now()-150000}
+  ]);
+}
+
+/* ========== Expose router for header links ========== */
+window.Router = Router;
+</script>
+</body>
+</html>
